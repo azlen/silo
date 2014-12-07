@@ -1,0 +1,606 @@
+<html>
+<head>
+	<link href='http://fonts.googleapis.com/css?family=Lato:100,400,900' rel='stylesheet' type='text/css'>
+	<style>
+		html, body{
+			margin:0px;
+			padding:0px;
+			width:100%;
+			height:100%;
+			display:flex;
+			align-items:center;
+			font-family:"Lato",sans-serif;
+			color:#333;
+			background-color:#eeeeee;
+		}
+		#title{
+			margin:0px;
+			font-size:100px;
+			text-align: center;
+		}
+
+		#container{
+			margin:auto;
+		}
+
+		table{
+			 border-collapse:collapse;
+		}
+
+		#table1 tr td, #table2 tr td, #next{
+			margin:0px;
+			padding:0px;
+			width:50px;
+			height:50px;
+			background-color: #ccc;
+			border:2px dashed rgba(50,50,50,0.3);
+			display:inline-block;
+			box-sizing:border-box;
+			-moz-box-sizing:border-box;
+			-webkit-box-sizing:border-box;
+		}
+		#next{
+			vertical-align: middle;
+		}
+
+		h2{
+			text-align: center;	
+		}
+
+		#player1, #player2{
+			position:absolute;
+			margin-left:10px;
+			margin-top:10px;
+			width:30px;
+			height:30px;
+			border-radius:50%;
+			background:#efefef;
+			z-index:42;
+			
+			box-sizing:border-box;
+			-moz-box-sizing:border-box;
+			-webkit-box-sizing:border-box;
+		}
+
+		#player1{
+			transition:all .25s;
+		}
+		#player2{
+			transition:all .5s;
+			background:#ccc;
+			/*border-radius:20%;*/
+		}
+
+		.monster{
+			position:absolute;
+			margin-left:10px;
+			margin-top:10px;
+			width:30px;
+			height:30px;
+			background:#C03000;
+			z-index: 666;
+			
+			box-sizing:border-box;
+			-moz-box-sizing:border-box;
+			-webkit-box-sizing:border-box;
+			transition:all .25s;
+		}
+
+		.t-container{
+			position:relative;
+			display:inline-block;
+			margin:20px;
+		}
+
+		#points{
+			position:relative;
+		}
+		.points{
+			position:absolute;
+			top:-20px;
+			left:53%;
+			opacity: 0;
+			-webkit-animation:floatup 1s;
+			animation:floatup 1s;
+		}
+		@keyframes floatup{
+			0%{
+				opacity:1;
+				top:-20px;
+			}
+			100%{
+				opacity:0;
+				top:-50px;
+			}
+		}
+		@-webkit-keyframes floatup{
+			0%{
+				opacity:1;
+				top:-20px;
+			}
+			100%{
+				opacity:0;
+				top:-50px;
+			}
+		}
+
+		#gameover{
+			position:absolute;
+			top:0px;
+			left:0px;
+			width:100%;
+			height:100%;
+			display:flex;
+			align-items:center;
+			-webkit-animation:fadein 2s;
+			animation:fadein 2s;
+			background-color:rgba(50,50,50,0.5);
+			z-index:1024;
+		}
+		#gameover > div{
+			margin:auto;
+			text-align: center;
+		}
+		#gameover h1{
+			font-size:100px;
+			color:#fff;
+			margin:auto;
+			text-align: center;
+		}
+
+		@keyframes fadein{
+			0%{
+				opacity:0;
+			}
+			100%{
+				opacity:1;
+			}
+		}
+		@-webkit-keyframes fadein{
+			0%{
+				opacity:0;
+			}
+			100%{
+				opacity:1;
+			}
+		}
+
+		#playagain{
+			padding:10px 40px;
+			background-color:rgba(255,255,255,0.2);
+			border-radius: 5px;
+			border:1px solid #333;
+			color:#fff;
+			font-size:30px;
+			font-weight:100;
+			display:inline-block;
+			margin:auto;
+			opacity:0;
+			-webkit-animation:fadein 1s 2s linear forwards;
+			animation:fadein: 1s 2s linear forwards;
+			cursor:pointer;
+			transition:0.25s all;
+			-webkit-transition:0.25s all;
+		}
+		#playagain:hover{
+			background-color:rgba(100,100,100,0.2);
+		}
+
+		#h2c{
+			text-align: center;
+		}
+		#h2c h2{
+			display:inline-block;
+			margin:10px 40px;
+		}
+
+		.new{
+			-webkit-animation:zoomin .5s;
+			animation:zoomin .5s;
+		}
+
+		@keyframes zoomin{
+			0%{
+				transform:scale(0);
+
+			}
+			100%{
+				transform:scale(1);
+			}
+		}
+		@-webkit-keyframes zoomin{
+			0%{
+				-webkit-transform:scale(0);
+			}
+			100%{
+				-webkit-transform:scale(1);
+			}
+		}
+	</style>
+</head>
+<body>
+	<div id="container">
+		<h1 id="title">Silo</h1>
+		<div id="h2c">
+			<h2 id="points">Score : <span id="points-number">0</span></h2>
+			<h2>Best : <span id="bestscore">0</span></h2>
+		</div>
+		<div>
+			<div class="t-container"><div id="player1"></div><table id="table1"></table></div>
+			<div class="t-container"><div id="player2"></div><table id="table2"></table></div>
+		</div>
+		<h2>Next color : <span id="next"></span></h2>
+	</div>
+	<script>
+		var size = 7;
+		var boxsize = 50;
+
+		var monstertimer = 8;
+
+		var ended = false;
+
+		var table1 = document.querySelector('#table1');
+		var table2 = document.querySelector('#table2');
+		var nextel = document.querySelector('#next');
+		var player1 = document.querySelector('#player1');
+		var player2 = document.querySelector('#player2');
+		var pointsel = document.querySelector('#points');
+		var pointsn = document.querySelector('#points-number');
+
+		var bestscore = document.querySelector('#bestscore');
+
+		if(localStorage.getItem('bestscore') == null){
+			localStorage.setItem('bestscore',0)
+		}
+
+		var harvested = [];
+
+		var range = 4;
+
+		var points = 0;
+		var pointgain = [0];
+		for(var i = 1; i < size*size; i++){
+			pointgain.push(pointgain[i-1]+i);
+		}
+
+		var monsters = [];
+		var monsterpos = {};
+
+		function monster(hp){
+			monsters.push(this)
+			this.hp = hp || 1;
+			this.x = 0;
+			this.y = 0;
+			this.el = document.createElement('div')
+			this.el.classList.add('monster')
+			player2.parentNode.appendChild(this.el)
+			this.el.style.left = this.x*boxsize;
+			this.el.style.top = this.y*boxsize;
+		}
+		monster.prototype.move = function(){
+			var distance = {
+				x: player.x - this.x,
+				y: player.y - this.y,
+			}
+			var nextpos = {
+				x:this.x,
+				y:this.y
+			}
+			if(Math.abs(distance.x) > Math.abs(distance.y)){
+				var dx = distance.x / Math.abs(distance.x);
+				console.log(dx)
+				if(dx == NaN){
+					gameover()
+				}
+				nextpos.x = this.x + dx;	
+			}else{
+				var dy = distance.y / Math.abs(distance.y);
+				if(dy == NaN){
+					gameover()
+				}
+				nextpos.y = this.y + dy;
+			}
+			if(!monsterpos[nextpos.x+','+nextpos.y]){
+				monsterpos[this.x+','+this.y] = undefined;
+				this.x = nextpos.x;
+				this.y = nextpos.y;
+			}
+			this.el.style.left = this.x*boxsize;
+			this.el.style.top = this.y*boxsize;
+
+			monsterpos[this.x+','+this.y] = this;
+
+			if(this.x == player.x && this.y == player.y){
+				gameover()
+			}
+		}
+		monster.prototype.hurt = function(dmg){
+			console.log('hurt')
+			this.hp -= dmg;
+			if(this.hp <= 0){
+				this.die()
+			}
+		}
+		monster.prototype.die = function(){
+			monsters.splice(monsters.indexOf(this),1)
+			player2.parentNode.removeChild(this.el)
+		}
+
+		function monsterstep(){
+			monsterpos = {};
+			monsters.forEach(function(m){
+				monsterpos[m.x+','+m.y] = m;
+			})
+			monsters.forEach(function(m){
+				m.move();
+			})
+		}
+
+		var resources = [
+		"#DC3522", //red
+		"#D9CB9E", //yellow/offwhite
+		"#374140", //grey
+		"#468966", //green
+		"#046380", //blue
+		"#b472bf"]
+
+		var resources = [
+		"#332532", //purple
+		"#644D52", //brownish
+		"#F77A52", //Orange
+		"#FF974F", //bright orange
+		"#A49A87", //sand
+		"#EFECCA"]
+
+		var resources = [
+		"#00261C", //dark green
+		"#044C29", //mid-dark green
+		"#167F39", //green
+		"#45BF55", //lime green
+		"#96ED89", //bright green
+		"#F6FFE0" //off white
+		]
+
+		var resources = [
+		"#002F32", //dark green
+		"#42826C", //mid-dark green
+		"#A5C77F", //green
+		"#FFC861", //lime green
+		"#C84663", //bright green
+		"#F6FFE0" //off white
+		]
+
+		var darkness = ['#000','#222',"#333",'#444','#555','#666']
+
+		function random(a,b){
+			return Math.floor(Math.random()*(b-a+1))+a
+		}
+
+		var player = {
+			x: random(0,size-1),
+			y: random(0,size-1),
+		}
+		player.move = function(dx,dy){
+			var nextpos = {
+				x: player.x+dx,
+				y: player.y+dy,
+			}
+			if(nextpos.x >= 0 && nextpos.x < size){
+				player.x += dx;
+			}
+			if(nextpos.y >= 0 && nextpos.y < size){
+				player.y += dy;
+			}
+			draw()
+
+		}
+		player.place = function(){
+			array1[player.y][player.x] = next;
+			next = random(0,range);
+			draw()
+		}
+		player.harvest = function(){
+			var current = array1[player.y][player.x];
+			var block = getblock(current,player.x,player.y);
+			block = Object.keys(block)
+			block.forEach(function(i){
+				var item = block.indexOf(i);
+				block[item] = i.split(',');
+				block[item][0] = Number(block[item][0])
+				block[item][1] = Number(block[item][1])
+			})
+			if(block.length >= 3){
+				harvested = block;
+			}
+			draw();
+		}
+
+		function getblock(cur,x,y,b){
+			var block = b || {};
+			if(!b){
+				block[x+','+y] = true;
+			}
+			var dir = [[-1,0],[0,-1],[1,0],[0,1]]
+			var checknext = [];
+			for(var i = 0; i < dir.length; i++){
+				var nextpos = {
+					x: x+dir[i][0],
+					y: y+dir[i][1],
+				}
+				if(!block[nextpos.x+','+nextpos.y]){
+					if(nextpos.x >= 0 && nextpos.y >= 0 && nextpos.x < size && nextpos.y < size){
+						if(array1[nextpos.y][nextpos.x] == cur){
+							block[nextpos.x+','+nextpos.y] = true;
+							checknext.push([nextpos.x,nextpos.y])
+						}
+					}
+				}
+			}
+			for(var i = 0; i < checknext.length; i++){
+				getblock(cur,checknext[i][0],checknext[i][1],block)
+			}
+			return block;
+		}
+
+		var next = random(0,range); //next color
+
+		function commafy(n){
+			return String(n).split("").reverse().join("").match(/[0-9][0-9][0-9]|[0-9]?[0-9]/g).join(',').split('').reverse().join('');
+			//What this does
+			//Convert points to string, reverse the string, add a comma every 3 nunbers, reverse it back
+		}
+
+		function addpoints(n){
+			points += n;
+			if(String(points).indexOf('e+') != -1){
+				pointsn.textContent = "Too large"
+				bestscore.textContent = "Too large"
+			}else{
+				pointsn.textContent = commafy(points)
+				if(localStorage.getItem('bestscore') < points){
+					bestscore.textContent = commafy(points)
+				}else if(String(localStorage.getItem('bestscore')).indexOf('e+') != -1){
+					bestscore.textContent = 'Too large'
+				}else{
+					bestscore.textContent = localStorage.getItem('bestscore')
+				}
+			}
+			if(n > 0){
+				var el = document.createElement('div')
+				el.classList.add('points')
+				el.textContent = '+'+n;
+				pointsel.appendChild(el)
+				setTimeout(function(){pointsel.removeChild(el)},1000)
+			}
+		}
+		addpoints(0)
+
+		var array1 = [];
+		for(var y = 0; y < size; y++){
+			array1.push([])
+			for(var x = 0; x < size; x++){
+				/*var newrange = [];
+				for(var i = 0; i < range+1; i++){
+					newrange.push(i);
+				}
+				if(y > 0){
+					newrange.splice(newrange.indexOf(array1[y-1][x]), 1)
+				}
+				if(x > 0){
+					newrange.splice(newrange.indexOf(array1[y][x-1]), 1)
+				}
+				array1[y].push(newrange[random(0,newrange.length-1)])
+				*/
+				array1[y].push(random(0,range))
+			}
+		}
+		var array2 = [];
+		for(var y = 0; y < size; y++){
+			array2.push([])
+			for(var x = 0; x < size; x++){
+				array2[y].push(0)
+			}
+		}
+
+		var frame = 0;
+
+		function draw(){
+			frame += 1;
+			if(harvested.length > 0){
+				addpoints(pointgain[harvested.length])
+				harvested.forEach(function(i){
+					array1[i[1]][i[0]] = random(0,range);
+					var monster = monsterpos[i[0]+','+i[1]];
+					console.log(i[0]+','+i[1])
+					console.log(monster)
+					if(monster != undefined){
+						monster.hurt(1);
+					}
+				})
+			}
+			if(frame % 2 == 0){
+				monsterstep()
+			}
+			if(frame % monstertimer == 0){
+				new monster();
+			}
+			table1.innerHTML = '';
+			array1.forEach(function(y){
+				var tr = document.createElement('tr')
+				y.forEach(function(x){
+					var td = document.createElement('td');
+					td.style.backgroundColor = resources[x];
+					tr.appendChild(td)
+				})
+				table1.appendChild(tr)
+			})
+			table2.innerHTML = '';
+			array1.forEach(function(y){
+				var tr = document.createElement('tr');
+				y.forEach(function(x){
+					var td = document.createElement('td');
+					td.style.backgroundColor = darkness[x];
+					tr.appendChild(td)
+				})
+				table2.appendChild(tr);
+			})
+			nextel.style.backgroundColor = resources[next];
+
+			player1.style.left = player.x*boxsize;
+			player2.style.left = player.x*boxsize;
+			player1.style.top = player.y*boxsize;
+			player2.style.top = player.y*boxsize;
+
+			harvested.forEach(function(n){
+				var i = n;
+				table1.children[i[1]].children[i[0]].classList.add('new')
+				table2.children[i[1]].children[i[0]].classList.add('new')
+				setTimeout(function(){
+					table1.children[i[1]].children[i[0]].classList.remove('new')
+					table2.children[i[1]].children[i[0]].classList.remove('new')
+				},1000)
+			})
+
+			harvested = [];
+		}
+
+		window.onkeydown = function(e){
+			//console.log(e.keyCode)
+			if(ended == false){
+				if(e.keyCode == 37){ //left
+					player.move(-1,0)
+				}else if(e.keyCode == 38){ //up
+					player.move(0,-1)
+				}else if(e.keyCode == 39){ //right
+					player.move(1,0)
+				}else if(e.keyCode == 40){ //down
+					player.move(0,1)
+				}else if(e.keyCode == 32){ //space
+					player.place()
+				}else if(e.keyCode == 69){ //e
+					player.harvest()
+				}
+			}else{
+				if(e.keyCode == 32 || e.keyCode == 80 || e.keyCode == 82){
+					restart()
+				}
+			}
+		}
+
+		function restart(){
+			location.reload(false);
+		}
+
+		function gameover(){
+			var el = document.createElement('div')
+			el.id = 'gameover'
+			el.innerHTML = '<div><h1>Game Over</h1><div id="playagain" onclick="restart()"><u>P</u>lay Again</div></div>'
+			document.body.appendChild(el);
+			ended = true;
+			localStorage.setItem('bestscore',Math.max(points,localStorage.getItem('bestscore')))
+		}
+
+		draw();
+	</script>
+</body>
+</html>
