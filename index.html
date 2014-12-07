@@ -512,8 +512,6 @@
 				harvested.forEach(function(i){
 					array1[i[1]][i[0]] = random(0,range);
 					var monster = monsterpos[i[0]+','+i[1]];
-					console.log(i[0]+','+i[1])
-					console.log(monster)
 					if(monster != undefined){
 						monster.hurt(1);
 					}
@@ -566,15 +564,15 @@
 		}
 
 		window.onkeydown = function(e){
-			//console.log(e.keyCode)
+			console.log(e.keyCode)
 			if(ended == false){
-				if(e.keyCode == 37){ //left
+				if(e.keyCode == 37 || e.keyCode == 65){ //left
 					player.move(-1,0)
-				}else if(e.keyCode == 38){ //up
+				}else if(e.keyCode == 38 || e.keyCode == 87){ //up
 					player.move(0,-1)
-				}else if(e.keyCode == 39){ //right
+				}else if(e.keyCode == 39 || e.keyCode == 68){ //right
 					player.move(1,0)
-				}else if(e.keyCode == 40){ //down
+				}else if(e.keyCode == 40 || e.keyCode == 83){ //down
 					player.move(0,1)
 				}else if(e.keyCode == 32){ //space
 					player.place()
