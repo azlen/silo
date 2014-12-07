@@ -100,8 +100,8 @@
 			top:-20px;
 			left:53%;
 			opacity: 0;
-			-webkit-animation:floatup 1s;
-			animation:floatup 1s;
+			-webkit-animation:floatup 2.5s;
+			animation:floatup 2.5s;
 		}
 		@keyframes floatup{
 			0%{
@@ -477,7 +477,7 @@
 				el.classList.add('points')
 				el.textContent = '+'+n;
 				pointsel.appendChild(el)
-				setTimeout(function(){pointsel.removeChild(el)},1000)
+				setTimeout(function(){pointsel.removeChild(el)},2500)
 			}
 		}
 		addpoints(0)
