@@ -263,6 +263,10 @@
 		for(var i = 1; i < size*size; i++){
 			pointgain.push(pointgain[i-1]+i);
 		}
+		var monsterpointgain = [0];
+		for(var i = 3; i < 20; i++){
+			monsterpointgain.push(Math.pow(2,i))
+		}
 
 		var monsters = [];
 		var monsterpos = {};
@@ -272,6 +276,7 @@
 			this.hp = hp || 1;
 			this.x = 0;
 			this.y = 0;
+			this.dead = false;
 			this.el = document.createElement('div')
 			this.el.classList.add('monster')
 			player2.parentNode.appendChild(this.el)
@@ -323,8 +328,9 @@
 			}
 		}
 		monster.prototype.die = function(){
-			monsters.splice(monsters.indexOf(this),1)
-			player2.parentNode.removeChild(this.el)
+			monsters.splice(monsters.indexOf(this),1);
+			player2.parentNode.removeChild(this.el);
+			this.dead = true;
 		}
 
 		function monsterstep(){
@@ -509,13 +515,18 @@
 			frame += 1;
 			if(harvested.length > 0){
 				addpoints(pointgain[harvested.length])
+				var monsterlist = [];
 				harvested.forEach(function(i){
 					array1[i[1]][i[0]] = random(0,range);
 					var monster = monsterpos[i[0]+','+i[1]];
 					if(monster != undefined){
 						monster.hurt(1);
+						monsterlist.push(monster)
 					}
 				})
+				setTimeout(function(){
+					addpoints(monsterpointgain[monsterlist.length])
+				},400)
 			}
 			if(frame % 2 == 0){
 				monsterstep()
