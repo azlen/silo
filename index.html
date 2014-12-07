@@ -329,7 +329,7 @@
 		}
 		monster.prototype.die = function(){
 			monsters.splice(monsters.indexOf(this),1);
-			player2.parentNode.removeChild(this.el);
+			this.el.parentNode.removeChild(this.el);
 			this.dead = true;
 		}
 
@@ -514,7 +514,6 @@
 		function draw(){
 			frame += 1;
 			if(harvested.length > 0){
-				addpoints(pointgain[harvested.length])
 				var monsterlist = [];
 				harvested.forEach(function(i){
 					array1[i[1]][i[0]] = random(0,range);
@@ -524,9 +523,7 @@
 						monsterlist.push(monster)
 					}
 				})
-				setTimeout(function(){
-					addpoints(monsterpointgain[monsterlist.length])
-				},400)
+				addpoints(pointgain[harvested.length] * (monsterlist.length || 1))
 			}
 			if(frame % 2 == 0){
 				monsterstep()
