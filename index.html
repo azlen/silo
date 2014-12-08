@@ -1,6 +1,7 @@
 <html>
 <head>
 	<link href='http://fonts.googleapis.com/css?family=Lato:100,400,900' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
 	<style>
 		html, body{
 			margin:0px;
@@ -13,6 +14,12 @@
 			color:#333;
 			background-color:#eeeeee;
 		}
+
+		h1,h2{
+			margin:0;
+			padding:0;
+		}
+
 		#title{
 			margin:0px;
 			font-size:100px;
@@ -125,7 +132,7 @@
 		}
 
 		#gameover{
-			position:absolute;
+			position:fixed;
 			top:0px;
 			left:0px;
 			width:100%;
@@ -216,9 +223,65 @@
 				-webkit-transform:scale(1);
 			}
 		}
+
+		#info{
+			position:fixed;
+			top:10px;
+			left:10px;
+			cursor:pointer;
+			transition:0.25s all;
+			-webkit-transition:0.25s all;
+		}
+		#info:hover{
+			color:#046380;
+		}
+		#sound{
+			position:fixed;
+			top:10px;
+			right:10px;
+			cursor:pointer;
+			transition:0.25s all;
+			-webkit-transition:0.25s all;
+		}
+		#sound:hover{
+			color:#468966;
+		}
+
+		#popup-container{
+			position:fixed;
+			top:0px;
+			left:0px;
+			width:100%;
+			height:100%;
+			display:none;
+			align-items:center;
+			z-index:1024;
+		}
+		#popup{
+			margin:auto;
+			width:600px;
+			background-color:rgba(255,255,255,0.9);
+			border:3px solid #333;
+			border-radius:10px;
+			padding:20px;
+			position:relative;
+		}
+		#closepopup{
+			position:absolute;
+			top:20px;
+			right:20px;
+			transition:0.25s all;
+			-webkit-transition:0.25s all;
+			cursor:pointer;
+		}
+		#closepopup:hover{
+			color:#C03000;
+		}
 	</style>
 </head>
 <body>
+	<div id="info" class="fa fa-info-circle fa-2x" onclick="togglepopup()"></div>
+	<!--<div id="sound" class="fa fa-volume-up fa-2x"></div>-->
 	<div id="container">
 		<h1 id="title">Silo</h1>
 		<div id="h2c">
@@ -231,14 +294,39 @@
 		</div>
 		<h2>Next color : <span id="next"></span></h2>
 	</div>
-	<audio autoplay loop src="music.mp3"></audio> <!-- fakemusicgenerator.com -->
+	<div id="popup-container">
+		<div id="popup">
+			<h1>Info</h1>
+			<div id="closepopup" class="fa fa-close fa-2x" onclick="togglepopup()"></div>
+			<p>This game has been made for <a href="http://ludumdare.com/compo/">Ludum Dare 31</a>, with the theme of "Entire Game on One Screen".</p>
+			<p>The controls for this game are simple and listed below:</p>
+			<ul>
+				<li>Arrow keys or WASD to move your player around</li>
+				<li>Space will place the next color to where you are standing</li>
+				<li>Pressing "e" will harvest the block of colors you are standing on </li>
+			</ul>
+			<p>If you imagine that each cluster of colors is a field, "e" harvests the whole field and gains you points. If a monster is in that field (on the right) when you harvest it, that monster will die. <br><br>Don't let the monsters touch you!</p>
+		</div>
+	</div>
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	  ga('create', 'UA-48179034-4', 'auto');
+	  ga('send', 'pageview');
+
+	</script>
 	<script>
 		var size = 7;
 		var boxsize = 50;
 
 		var monstertimer = 8;
 
-		var ended = false;
+		var paused = false;
+
+		var toggledp = false;
 
 		var table1 = document.querySelector('#table1');
 		var table2 = document.querySelector('#table2');
@@ -247,6 +335,16 @@
 		var player2 = document.querySelector('#player2');
 		var pointsel = document.querySelector('#points');
 		var pointsn = document.querySelector('#points-number');
+		var pc = document.querySelector('#popup-container');
+
+		function togglepopup(){
+			toggledp = !toggledp;
+			if(toggledp){
+				pc.style.display = 'flex'
+			}else{
+				pc.style.display = 'none'
+			}
+		}
 
 		var bestscore = document.querySelector('#bestscore');
 
@@ -573,7 +671,7 @@
 
 		window.onkeydown = function(e){
 			console.log(e.keyCode)
-			if(ended == false){
+			if(paused == false){
 				if(e.keyCode == 37 || e.keyCode == 65){ //left
 					player.move(-1,0)
 				}else if(e.keyCode == 38 || e.keyCode == 87){ //up
@@ -603,7 +701,7 @@
 			el.id = 'gameover'
 			el.innerHTML = '<div><h1>Game Over</h1><div id="playagain" onclick="restart()"><u>P</u>lay Again</div></div>'
 			document.body.appendChild(el);
-			ended = true;
+			paused = true;
 			localStorage.setItem('bestscore',Math.max(points,localStorage.getItem('bestscore')))
 		}
 
