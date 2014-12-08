@@ -10,13 +10,6 @@
 	<meta name="description" content="A fun game about harvesting crops, and killing monsters" />
 	<link rel="image_src" href="image.png" style="display:none"/>
 
-	<body itemscope itemtype="http://schema.org/Article">
-		<h1 itemprop="name" style="display:none">Silo</h1>
-		<img itemprop="image" src="image.png" style="display:none"/>
-		<p itemprop="description" style="display:none">A fun game about harvesting crops, and killing monsters</p>
-	</body>
-
-
 	<link href='http://fonts.googleapis.com/css?family=Lato:100,400,900' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
 	<style>
@@ -298,11 +291,14 @@
 	</style>
 </head>
 
-<body>
+<body itemscope itemtype="http://schema.org/Article">
+	<img itemprop="image" src="image.png" style="display:none"/>
+	<p itemprop="description" style="display:none">A fun game about harvesting crops, and killing monsters</p>
+
 	<div id="info" class="fa fa-info-circle fa-2x" onclick="togglepopup()"></div>
 	<div id="sound" class="fa fa-volume-up fa-2x" onclick="toggleaudio()"></div>
 	<div id="container">
-		<h1 id="title">Silo</h1>
+		<h1 itemprop="name" id="title">Silo</h1>
 		<div id="h2c">
 			<h2 id="points">Score : <span id="points-number">0</span></h2>
 			<h2>Best : <span id="bestscore">0</span></h2>
