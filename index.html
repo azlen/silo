@@ -668,6 +668,11 @@
 			if(frame % monstertimer == 0){
 				new monster();
 			}
+			monsters.forEach(function(m){
+				if(m.x == player.x && m.y == player.y){
+					gameover()
+				}
+			})
 			table1.innerHTML = '';
 			array1.forEach(function(y){
 				var tr = document.createElement('tr')
