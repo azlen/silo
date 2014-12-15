@@ -464,7 +464,9 @@
 		}
 		monster.prototype.die = function(){
 			monsters.splice(monsters.indexOf(this),1);
-			this.el.parentNode.removeChild(this.el);
+			if(this.el.parentNode){
+				this.el.parentNode.removeChild(this.el);
+			}
 			this.dead = true;
 		}
 
