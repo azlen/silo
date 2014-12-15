@@ -450,10 +450,6 @@
 			this.el.style.top = this.y*boxsize;
 
 			monsterpos[this.x+','+this.y] = this;
-
-			if(this.x == player.x && this.y == player.y){
-				gameover()
-			}
 		}
 		monster.prototype.hurt = function(dmg){
 			console.log('hurt')
@@ -668,6 +664,12 @@
 			if(frame % monstertimer == 0){
 				new monster();
 			}
+			monsters.forEach(function(m){
+				if(m.x == player.x && m.y == player.y){
+					gameover()
+				}
+			})
+			
 			table1.innerHTML = '';
 			array1.forEach(function(y){
 				var tr = document.createElement('tr')
