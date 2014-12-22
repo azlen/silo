@@ -378,6 +378,7 @@
         }
 
 		function togglepopup(){
+            localStorage.__silo_hasSeenHelp = true;
 			toggledp = !toggledp;
 			if(toggledp){
 				pc.style.display = 'flex'
@@ -385,6 +386,9 @@
 				pc.style.display = 'none'
 			}
 		}
+        if (! localStorage.__silo_hasSeenHelp){
+            togglepopup();
+        }
 
 		var bestscore = document.querySelector('#bestscore');
 
@@ -432,7 +436,7 @@
 			}
 			if(Math.abs(distance.x) > Math.abs(distance.y)){
 				var dx = distance.x / Math.abs(distance.x);
-				console.log(dx)
+				// console.log(dx)
 				if(dx == NaN){
 					gameover()
 				}
@@ -459,7 +463,7 @@
 			}
 		}
 		monster.prototype.hurt = function(dmg){
-			console.log('hurt')
+			// console.log('hurt')
 			this.hp -= dmg;
 			if(this.hp <= 0){
 				this.die()
@@ -721,7 +725,7 @@
 		}
 
 		window.onkeydown = function(e){
-			console.log(e.keyCode)
+			// console.log(e.keyCode)
 			if(paused == false){
 				if(e.keyCode == 37 || e.keyCode == 65){ //left
 					player.move(-1,0)
