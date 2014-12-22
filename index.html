@@ -617,7 +617,11 @@
 				el.classList.add('points')
 				el.textContent = '+'+n;
 				pointsel.appendChild(el)
-				setTimeout(function(){pointsel.removeChild(el)},2500)
+				setTimeout(function(){
+                    if (el.parentElement){
+                        el.parentElement.removeChild(el);
+                    }
+                },2500)
 			}
 		}
 		addpoints(0)
