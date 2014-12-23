@@ -434,20 +434,22 @@
 				x:this.x,
 				y:this.y
 			}
-			if(Math.abs(distance.x) > Math.abs(distance.y)){
-				var dx = distance.x / Math.abs(distance.x);
-				// console.log(dx)
-				if(dx == NaN){
-					gameover()
-				}
-				nextpos.x = this.x + dx;
+            var dx = 0, dy = 0;
+            if (Math.abs(distance.x) && Math.abs(distance.y)){
+                if (Math.random() > 0.5){
+                    dx = distance.x / Math.abs(distance.x);
+                }else{
+                    dy = distance.y / Math.abs(distance.y);
+                }
+            }else if(Math.abs(distance.x)){
+				dx = distance.x / Math.abs(distance.x);
+            }else if (Math.abs(distance.y)){
+                dy = distance.y / Math.abs(distance.y);
 			}else{
-				var dy = distance.y / Math.abs(distance.y);
-				if(dy == NaN){
-					gameover()
-				}
-				nextpos.y = this.y + dy;
+				return gameover();
 			}
+            nextpos.x = this.x + dx;
+            nextpos.y = this.y + dy;
 			if(!monsterpos[nextpos.x+','+nextpos.y]){
 				monsterpos[this.x+','+this.y] = undefined;
 				this.x = nextpos.x;
