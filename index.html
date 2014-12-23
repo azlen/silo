@@ -15,6 +15,10 @@
 
 	<link href='http://fonts.googleapis.com/css?family=Lato:100,400,900' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="height=device-height,initial-scale=.5, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 	<style>
 		html, body{
 			margin:0px;
@@ -327,6 +331,7 @@
 		</div>
 	</div>
 	<audio id="audio" autoplay loop src="music.mp3"></audio>
+    <script src="touch.js"></script>
 	<script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -434,20 +439,22 @@
 				x:this.x,
 				y:this.y
 			}
-			if(Math.abs(distance.x) > Math.abs(distance.y)){
-				var dx = distance.x / Math.abs(distance.x);
-				// console.log(dx)
-				if(dx == NaN){
-					gameover()
-				}
-				nextpos.x = this.x + dx;
+            var dx = 0, dy = 0;
+            if (Math.abs(distance.x) && Math.abs(distance.y)){
+                if (Math.random() > 0.5){
+                    dx = distance.x / Math.abs(distance.x);
+                }else{
+                    dy = distance.y / Math.abs(distance.y);
+                }
+            }else if(Math.abs(distance.x)){
+				dx = distance.x / Math.abs(distance.x);
+            }else if (Math.abs(distance.y)){
+                dy = distance.y / Math.abs(distance.y);
 			}else{
-				var dy = distance.y / Math.abs(distance.y);
-				if(dy == NaN){
-					gameover()
-				}
-				nextpos.y = this.y + dy;
+				return gameover();
 			}
+            nextpos.x = this.x + dx;
+            nextpos.y = this.y + dy;
 			if(!monsterpos[nextpos.x+','+nextpos.y]){
 				monsterpos[this.x+','+this.y] = undefined;
 				this.x = nextpos.x;
@@ -749,6 +756,33 @@
 				}
 			}
 		}
+
+        document.getElementById('table1').addEventListener('tap', function(evt){
+            player.place();
+        });
+
+        document.getElementById('table2').addEventListener('tap', function(evt){
+            player.harvest();
+        });
+
+        document.body.addEventListener('swipeleft', function(evt){
+            player.move(-1,0);
+        });
+        document.body.addEventListener('swipeup', function(evt){
+            player.move(0,-1);
+        });
+        document.body.addEventListener('swiperight', function(evt){
+            player.move(1,0);
+        });
+        document.body.addEventListener('swipedown', function(evt){
+            player.move(0,1);
+        });
+        document.body.addEventListener('pinchout', function(evt){
+            restart();
+        });
+        new Touch(document.getElementById('table1'));
+        new Touch(document.getElementById('table2'));
+        new Touch(document.body);
 
 		function restart(){
 			location.reload(false);
